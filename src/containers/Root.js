@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
+import { loginUser } from '../lib/firebase';
+
 export default class Root extends Component {
+    
+    handleLogin() { loginUser(); }
+    
     render() {
         return (
             <Switch>
               <Route
                 path="/login"
-                render={() => {return <h1>Login</h1>}}
+                render={() => {return <button onClick={this.handleLogin}>Login</button>}}
               />
               <Route
                 path="/register"

@@ -123,7 +123,34 @@ render(
 - Run `$ npm install --save firebase`
 - Add to package.json `"config-firebase": "firebase setup:web --json > ./src/config/firebase.json"` and do `npm run config-firebase`
 - Add to `.gitignore` the line `src/config/firebase.json`
+- Add to `src/config/index` the lines `import firebaseConfig from './firebase.json';` and to the export `{firebase: firebaseConfig.result}`
+- Add to `src/lib/firebase.js` the code:
+```javascript
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import * as log from 'loglevel';
+export const firebaseApp = firebase;
+export const auth = firebase.auth;
 
+const provider = new auth.GoogleAuthProvider();
+
+export async function loginUser() {
+    try {
+        const result = await auth().signInWithPopup(provider);
+        const userData = Object.assign({
+              user: result.user,
+              token: result.credential.accessToken
+          });
+          log.info(userData);
+          return userData;
+    } catch(error) {
+          return error;
+    }
+}
+```
+- Add to `src/index.js` to lines `import { firebaseApp } from './lib/firebase'; firebaseApp.initializeApp(Config.firebase);`
+- Change in `src/containters/Root.js` the `<h1>login</h1>` into `<button onClick={this.handleLogin}>Login</button>` and add `import { loginUser } from '../lib/firebase';` and `handleLogin() { loginUser(); }`
+- Run `$ npm install --save-dev babel-plugin-transform-runtime` and add to `.babelrc` the line `"plugins": ["transform-runtime"]` (it is for e.g. async/await functions)
 
 ## Redux
 - `npm install --save redux react-redux redux-thunk`

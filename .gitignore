@@ -63,3 +63,4 @@ typings/
 # custom
 public/main.js
 src/config/app.json
+src/config/firebase.json
