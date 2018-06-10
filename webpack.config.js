@@ -1,4 +1,7 @@
 module.exports = {
+    output: {
+        path: require('path').join(__dirname, 'public')
+    },
     module: {
         rules: [
             { test: /\.js$/, exclude: /node_modules/, use: ['babel-loader']	}    
@@ -7,7 +10,7 @@ module.exports = {
 	devServer: {
 		host: process.env.IP,
 		public: process.env.C9_HOSTNAME,
-		contentBase: 'public',
+		contentBase: ['public', 'dist'],
 		historyApiFallback: true
 	}
 };

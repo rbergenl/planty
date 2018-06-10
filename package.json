@@ -6,6 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --mode development",
+    "build": "webpack --mode production",
+    "serve-firebase": "npm run build && firebase serve --port $PORT --host $IP",
+    "deploy-firebase": "npm run build && firebase deploy --only hosting",
     "config-app": "node ./src/config/config-app",
     "config-firebase": "firebase setup:web --json > ./src/config/firebase.json"
   },

@@ -9,12 +9,15 @@
 ## Webpack
 - `npm init --yes`
 - `npm install --save-dev webpack webpack-dev-server webpack-cli`
-- add to package.json: `"start": "webpack-dev-server --mode development"`
+- add to package.json: `"start": "webpack-dev-server --mode development"` and `"build": "webpack --mode production"`
 - create a file `src/index.js`
 - create a file `public/index.html` with the line `<div id="root"></div><script type="text/javascript" src="/main.js"></script></body>`
 - create the `webpack.config.js` file:
 ```javascript
 module.exports = {
+    output: {
+        path: require('path').join(__dirname, 'public')
+    },
 	devServer: {
 		host: process.env.IP,
 		public: process.env.C9_HOSTNAME,
@@ -22,6 +25,7 @@ module.exports = {
 	}
 };
 ```
+- Add to `.gitignore` the line `public/main.js`.
 
 ## Logging and Configuration
 - `npm install --save-dev loglevel`
@@ -110,16 +114,15 @@ render(
 - Run `$ firebase login --no-localhost`
 - Run `$ firebase init` and select all options (firestore, functions, hosting, database, etc..) and accept all defaults (but dont install dependencies now)
 - Run `$ npm --prefix ./functions install` (to now outside the firebase init do the installation of dependencies in the just generated functions folder)
-- Run `$ firebase serve --port $PORT --host $IP` to check the preview locally (do CTRL+C to stop)
-- Run `$ firebase deploy`
+- Add to package.json `"serve-firebase": "npm run build && firebase serve --port $PORT --host $IP"` and run `$ npm run serve-firebase`
+- Add to package.json `"deploy-firebase": "npm run build && firebase deploy --only hosting"` and run `$ npm run deploy-firebase`
 
-## Firebase Configuration
-- add to package.json `"config-firebase": "firebase setup:web --json > ./src/config/firebase.json"` and do `npm run config-firebase`
-- add to `.gitignore` the line `src/config/firebase.json`
 
 ## Firebase Authentication
 - At https://console.firebase.google.com the project, enable Google signin on Authentication section; and add the hosting URL to 'gemachtigde domeinen'
 - Run `$ npm install --save firebase`
+- Add to package.json `"config-firebase": "firebase setup:web --json > ./src/config/firebase.json"` and do `npm run config-firebase`
+- Add to `.gitignore` the line `src/config/firebase.json`
 
 
 ## Redux
