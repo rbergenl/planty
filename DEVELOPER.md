@@ -6,7 +6,7 @@
 - Login to Cloud9 with your Github account and start a workspace attached to the repository
 - Create a project in console.firebase.google.com (and enable Firestore in the Database section)
 
-## Webpack
+## Project Bundling (Webpack)
 - `npm init --yes`
 - `npm install --save-dev webpack webpack-dev-server webpack-cli`
 - add to package.json: `"start": "webpack-dev-server --mode development"` and `"build": "webpack --mode production"`
@@ -27,7 +27,7 @@ module.exports = {
 ```
 - Add to `.gitignore` the line `public/main.js`.
 
-## Logging and Configuration
+## Logging and Configuration for Development
 - `npm install --save-dev loglevel`
 - add to package.json `"config-app": "node ./src/config/config-app"`
 - create a file `src/config/config-app.js` with the code `require('fs').writeFileSync('./src/config/app.json', JSON.stringify({LogLevel: 'debug' }));`
@@ -42,7 +42,7 @@ log.setLevel(Config.logLevel);
 log.info('hello world');
 ```
 
-## React
+## App Shell (React)
 - `$ npm install --save-dev babel-core babel-loader babel-preset-env`
 - add to `webpack.config.js` the module.rules[]: `{ test: /\.js$/, exclude: /node_modules/, use: ['babel-loader']	}`
 - `npm install --save react react-dom babel-preset-react`
@@ -152,27 +152,80 @@ export async function loginUser() {
 - Change in `src/containters/Root.js` the `<h1>login</h1>` into `<button onClick={this.handleLogin}>Login</button>` and add `import { loginUser } from '../lib/firebase';` and `handleLogin() { loginUser(); }`
 - Run `$ npm install --save-dev babel-plugin-transform-runtime` and add to `.babelrc` the line `"plugins": ["transform-runtime"]` (it is for e.g. async/await functions)
 
-## Redux
-- `npm install --save redux react-redux redux-thunk`
-- create the file `configureStore.js`.
-- create the file `reducers/index.js`.
-- create the file `actions/index.js`.
-- add to `index.js` the following snippet: `import configureStore from './configureStore'; import { Provider } from 'react-redux'; const store = configureStore;` and wrap the router with `<Provider store={store}>`
-- create `actions/authActions.js`
-- create `reducers/authReducer.js`
+## State Management (Redux)
+- Run `npm install --save redux react-redux redux-thunk`
+- Add to `src/index.js` and wrap the router with `<Provider store={store}>`:
+```javascript
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import ReduxThunk from 'redux-thunk';
+const rootReducer = (state, action) => {return {auth: {loggedIn:false}}};
+const store = createStore(
+  rootReducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+  applyMiddleware(ReduxThunk),
+);
+```
+Add to `src/containers/Root.js`: (Add withRouter() so that the location gets updated into child-components as well (e.g. login component uses `withRouter(connect());`))
+```javascript
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+render() {
+  const { loggedIn } = this.props;
+  return(<Route path="/" render={() => {return loggedIn === false ? (<Redirect to={{pathname: '/login'}} />) : (<h1>App</h1>)}} />)
+}
+const mapStateToProps = state => ({ loggedIn: state.auth.loggedIn });
+export default withRouter(connect(mapStateToProps)(Root));
+```
+- Check the result and see the automatic redirect to /login because state.auth.loggedIn is false.
 
-- `npm install --save-dev babel-preset-stage-2` and add to `.babelrc` (stage-2 for class propTypes)
-- `npm install --save-dev babel-preset-stage-3` and add to `.babelrc` (stage-3 for spread operator)
+### Actions
+- Create the file `src/actions/authActions.js`:
+```javascript
+import * as Firebase from '../lib/firebase';
+import * as log from 'loglevel';
+import history from '../lib/history';
+import {
+  LOGIN_USER_SUCCESS,
+  LOGIN_USER_FAILED
+} from '../actions';
+export const loginUser = () => {
+    return async (dispatch) => {
+        try{
+          const userData = await Firebase.loginUser();
+          log.info(userData);
+          dispatch({ type: LOGIN_USER_SUCCESS });
+          history.push('/');
+        } catch (e) {
+          dispatch({ type: LOGIN_USER_FAILED });
+        }
+    };
+};
+```
+- Create the file `src/actions/index.js`:
+```javascript
+export const LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
+export const LOGIN_USER_FAILED = 'LOGIN_USER_FAILED';
+```
+- Create the file `src/reducers/authReducer.js`;
+```javascript
+import { LOGIN_USER_SUCCESS, LOGIN_USER_FAILED } from '../actions';
+export const initialState = { loggedIn: false };
+export default (state = initialState, action) => {
+    switch (action.type) {
+        case LOGIN_USER_SUCCESS:
+            return { loggedIn: true };
+        default:
+            return state;
+    }
+};
+```
+- Modify in `src/index.js` the line to `const rootReducer = combineReducers({auth});` and do `import auth from './reducers/authReducer';` and `import { combineReducers } from 'redux'`
+- Modify in `src/containers/Root.js` the line to `import { loginUser } from '../actions/authActions';` and `import { bindActionCreators } from 'redux';`
+- Add the line `const mapDispatchToProps = dispatch => (bindActionCreators({ loginUser: loginUser }, dispatch));` and add this constant as second parameter to the `connect` function.
+- Modify the button line to `onClick={this.props.loginUser}`
 
-### Container (logic)
-- add withRouter() so that the location gets updated into child-components as well
-- Login component uses `withRouter(connect());`
- 
-
-### Component (presentation)
--
-
-## Material-ui
+## Theme (Material-ui)
 - Run `$ npm install @material-ui/core`
 - Run `$ npm install --save-dev style-loader css-loader`
 - Add to `webpack.config.js` the module.rule: `{ test: /\.css$/, exclude: /node_modules/, use: ['style-loader', 'css-loader'] }`
@@ -181,9 +234,14 @@ export async function loginUser() {
 - Replace in `index.web.js` the `<h1>` with `<Button variant="raised" color="primary">` and load at the top `import Button from '@material-ui/core/Button';`
 - Add `import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';` and `const theme = createMuiTheme();` with wrapping the button with `<MuiThemeProvider theme={theme}>`
 
-## Add Icons
+### Add Icons
 - Run `$ npm install mdi-material-ui --save`
 - Add `import Google from 'mdi-material-ui/Google';` and `<Google />`.
 
 
 ## WebApp (manifest.json, icons, serviceworker)
+
+
+# Common Problems
+- `npm install --save-dev babel-preset-stage-2` and add to `.babelrc` (stage-2 for class propTypes)
+- `npm install --save-dev babel-preset-stage-3` and add to `.babelrc` (stage-3 for spread operator)
