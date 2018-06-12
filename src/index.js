@@ -24,14 +24,21 @@ const store = createStore(
   applyMiddleware(ReduxThunk),
 );
 
+// Theme
+import './index.css';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+const theme = createMuiTheme();
+
 // App Shell
 import React from 'react';
 import { render } from 'react-dom';
 render(
   <Provider store={store}>
-    <Router history={history}>
-      <Root />
-    </Router>
+    <MuiThemeProvider theme={theme}>
+      <Router history={history}>
+        <Root />
+      </Router>
+    </MuiThemeProvider>
   </Provider>,
   document.getElementById('root'),
 );

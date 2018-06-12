@@ -226,18 +226,24 @@ export default (state = initialState, action) => {
 - Modify the button line to `onClick={this.props.loginUser}`
 
 ## Theme (Material-ui)
-- Run `$ npm install @material-ui/core`
+- Run `$ npm install --save @material-ui/core`
 - Run `$ npm install --save-dev style-loader css-loader`
 - Add to `webpack.config.js` the module.rule: `{ test: /\.css$/, exclude: /node_modules/, use: ['style-loader', 'css-loader'] }`
-- Create `src/index.css` with the code `body { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }` and add at the top of `index.web.js` the code `import './index.css';`
+- Create `src/index.css` with the code `body { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }` and add at the top of `index.js` the code `import './index.css';`
+- Add `import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';` and `const theme = createMuiTheme();` with wrapping the Router with `<MuiThemeProvider theme={theme}>`
 - Add to `index.html` the following snippet: `<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet"><link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">`
-- Replace in `index.web.js` the `<h1>` with `<Button variant="raised" color="primary">` and load at the top `import Button from '@material-ui/core/Button';`
-- Add `import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';` and `const theme = createMuiTheme();` with wrapping the button with `<MuiThemeProvider theme={theme}>`
+- Replace in `src/containers/Root.js` the `<button>` with `<Button variant="raised" color="primary">` and load at the top `import Button from '@material-ui/core/Button';`
+
+
+- `npm install babel-plugin-transform-decorators-legacy --save-dev` and add to `.babelrc` plugins `"transform-decorators-legacy"`
+- `@withStyles(styles)`
+
 
 ### Add Icons
 - Run `$ npm install mdi-material-ui --save`
-- Add `import Google from 'mdi-material-ui/Google';` and `<Google />`.
+- Add `import Google from 'mdi-material-ui/Google';` and `<Google />` inside the button.
 
+- `npm install --save @material-ui/icons`
 
 ## WebApp (manifest.json, icons, serviceworker)
 
