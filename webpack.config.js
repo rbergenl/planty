@@ -5,7 +5,8 @@ module.exports = {
     module: {
         rules: [
             { test: /\.js$/, exclude: /node_modules/, use: ['babel-loader']	},
-            { test: /\.css$/, exclude: /node_modules/, use: ['style-loader', 'css-loader'] }
+            { test: /\.css$/, exclude: /node_modules/, use: ['style-loader', 'css-loader'] },
+            { test: /\.(png|svg|jpg|gif)$/, use: ['file-loader'] }
         ]
     },
 	devServer: {

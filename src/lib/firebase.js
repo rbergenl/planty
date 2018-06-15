@@ -13,10 +13,20 @@ export async function loginUser() {
         const userData = Object.assign({
             // The signed-in user info.
             user: result.user,
+            given_name: result.additionalUserInfo.profile.given_name,
             // This gives you a Google Access Token. You can use it to access the Google API.
             token: result.credential.accessToken
         });
         return userData;
+    } catch(error) {
+        return error;
+    }
+}
+
+export async function logoutUser() {
+    try {
+        const result = firebase.auth().signOut();
+        return result;
     } catch(error) {
         return error;
     }

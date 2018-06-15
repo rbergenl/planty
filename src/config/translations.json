@@ -1,0 +1,15 @@
+{
+  "app_name": [
+    "Planty"  
+  ],
+  "title": [
+    "Okay",
+    "My Article title FR",
+    "My Article title ES"
+  ],
+  "greeting": [
+    "Hello, ${name}!",
+    "Bonjour ${name}!",
+    "Hola ${name}!"
+  ]
+}

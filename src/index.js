@@ -14,24 +14,47 @@ firebaseApp.initializeApp(Config.firebase);
 
 // State
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import ReduxThunk from 'redux-thunk';
+// - multilingual
+import { localizeReducer as locale } from "react-localize-redux";
+// - offline
+import { offline } from '@redux-offline/redux-offline';
+import offlineConfig from '@redux-offline/redux-offline/lib/defaults';
+// - reducers
 import auth from './reducers/authReducer';
-const rootReducer = combineReducers({auth});
+const rootReducer = combineReducers({
+  auth,
+  locale
+});
+// - store
 const store = createStore(
   rootReducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-  applyMiddleware(ReduxThunk),
+  compose(
+    applyMiddleware(ReduxThunk),
+    offline(offlineConfig)
+  )
 );
 
 // Theme
 import './index.css';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-const theme = createMuiTheme();
+import green from '@material-ui/core/colors/green';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      ...green,
+      contrastText: '#fff'
+    }
+  }
+});
 
 // App Shell
 import React from 'react';
 import { render } from 'react-dom';
+
 render(
   <Provider store={store}>
     <MuiThemeProvider theme={theme}>
@@ -39,6 +62,6 @@ render(
         <Root />
       </Router>
     </MuiThemeProvider>
-  </Provider>,
-  document.getElementById('root'),
+  </Provider>, 
+  document.getElementById('root')
 );

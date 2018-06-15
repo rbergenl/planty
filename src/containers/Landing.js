@@ -2,44 +2,64 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { getTranslate } from 'react-localize-redux';
 
 import history from '../lib/history';
 
 import { loginUser } from '../actions/authActions';
 
-import Button from '@material-ui/core/Button';
-import Google from 'mdi-material-ui/Google';
-
 import { withStyles } from '@material-ui/core/styles';
 
+import SocialButton from '../components/SocialButton';
+import Button from '@material-ui/core/Button';
+
 const styles = theme => ({
-  button: {
-    textTransform: 'capitalize',
-    backgroundColor: 'white'
+  container: {
+      display: 'flex',
+      flex: '1',
+      flexFlow: 'row wrap',
+      justifyContent: 'space-around'
   },
-  leftIcon: {
-    marginRight: theme.spacing.unit,
+  button: {
+      margin: '10px'
   }
 });
 
 @withStyles(styles)
 class Landing extends React.Component {
     render() {
-        const { loginUser, classes } = this.props;
+        const { loginUser, classes, translate } = this.props;
         
         return (
-            <div>
-                <Button className={classes.button} variant="raised" onClick={loginUser}>
-                    <Google className={classes.leftIcon} />
-                    Sign in with Google
+            <div className={classes.container}>
+                <h1>{ translate('app_name') }</h1>
+                <SocialButton
+                    className={classes.button}
+                    handleClick={ loginUser }
+                />
+                <Button
+                    className={classes.button}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {history.push('/register')}}
+                    style={{flex: '1 1 0%'}} >
+                    Register
                 </Button>
-                <button onClick={() => {history.push('/signup')}}>Signup</button>
-                <button onClick={() => {history.push('/login')}}>Login</button>
+                <Button
+                    className={classes.button}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {history.push('/login')}}
+                    style={{flex: '1 1 0%'}}>
+                    Login
+                </Button>
             </div>
         );
     }
 }
 
-const mapStateToProps = state => ({ });
-const mapDispatchToProps = dispatch => (bindActionCreators({ loginUser: loginUser }, dispatch));
+const mapStateToProps = state => ({
+    translate: getTranslate(state.locale)
+});
+const mapDispatchToProps = dispatch => (bindActionCreators({ loginUser }, dispatch));
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)( Landing ));

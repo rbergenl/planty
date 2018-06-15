@@ -15,7 +15,7 @@ import Menu from '@material-ui/core/Menu';
 
 const styles = {
   root: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   flex: {
     flex: 1,
@@ -23,18 +23,21 @@ const styles = {
   menuButton: {
     marginLeft: -12,
     marginRight: 20,
-  },
+  }
 };
 
-class MenuAppBar extends React.Component {
+@withStyles(styles)
+export default class MenuAppBar extends React.Component {
+
   state = {
-    auth: true,
+    auth: this.props.loggedIn,
     anchorEl: null,
   };
 
   handleChange = (event, checked) => {
     this.setState({ auth: checked });
   };
+  
 
   handleMenu = event => {
     this.setState({ anchorEl: event.currentTarget });
@@ -43,21 +46,25 @@ class MenuAppBar extends React.Component {
   handleClose = () => {
     this.setState({ anchorEl: null });
   };
+  
+  handleLogout = () => {
+    this.props.logoutUser();
+  }
 
   render() {
-    const { classes } = this.props;
+    const { classes, title } = this.props;
     const { auth, anchorEl } = this.state;
     const open = Boolean(anchorEl);
 
     return (
       <div className={classes.root}>
         <FormGroup>
-          <FormControlLabel
+        {/*  <FormControlLabel
             control={
               <Switch checked={auth} onChange={this.handleChange} aria-label="LoginSwitch" />
             }
             label={auth ? 'Logout' : 'Login'}
-          />
+          /> */}
         </FormGroup>
         <AppBar position="static">
           <Toolbar>
@@ -65,7 +72,7 @@ class MenuAppBar extends React.Component {
               <MenuIcon />
             </IconButton>
             <Typography variant="title" color="inherit" className={classes.flex}>
-              Title
+              {title}
             </Typography>
             {auth && (
               <div>
@@ -93,6 +100,7 @@ class MenuAppBar extends React.Component {
                 >
                   <MenuItem onClick={this.handleClose}>Profile</MenuItem>
                   <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                  <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
                 </Menu>
               </div>
             )}
@@ -102,9 +110,3 @@ class MenuAppBar extends React.Component {
     );
   }
 }
-
-MenuAppBar.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default withStyles(styles)(MenuAppBar);

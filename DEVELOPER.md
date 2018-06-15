@@ -152,6 +152,14 @@ export async function loginUser() {
 - Change in `src/containters/Root.js` the `<h1>login</h1>` into `<button onClick={this.handleLogin}>Login</button>` and add `import { loginUser } from '../lib/firebase';` and `handleLogin() { loginUser(); }`
 - Run `$ npm install --save-dev babel-plugin-transform-runtime` and add to `.babelrc` the line `"plugins": ["transform-runtime"]` (it is for e.g. async/await functions)
 
+### Login/Logout Flow (with a sessions alwasy go back to the root; when no session, redirect to /landing)
+=> when user goes to / (so wants to load the app), but has no sessions -> go to /landing
+=> when on landing, login or register and already has sessions; go to / (the app)
+=> when on landing, but has no sessions; be able to do social login, login, or register
+=> when logged in > redirect to "comes from or by default to / (app)"
+=> when user is logged in; and is in the app, and clicks on logout; go to /
+
+
 ## State Management (Redux)
 - Run `npm install --save redux react-redux redux-thunk`
 - Add to `src/index.js` and wrap the router with `<Provider store={store}>`:
@@ -229,25 +237,70 @@ export default (state = initialState, action) => {
 - Run `$ npm install --save @material-ui/core`
 - Run `$ npm install --save-dev style-loader css-loader`
 - Add to `webpack.config.js` the module.rule: `{ test: /\.css$/, exclude: /node_modules/, use: ['style-loader', 'css-loader'] }`
-- Create `src/index.css` with the code `body { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }` and add at the top of `index.js` the code `import './index.css';`
+- Create `src/index.css` with the code `body { margin: 0; padding: 0; font-family: 'Roboto', Helvetica, Arial, sans-serif; background: #ECEFF1; }` and add at the top of `index.js` the code `import './index.css';`
 - Add `import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';` and `const theme = createMuiTheme();` with wrapping the Router with `<MuiThemeProvider theme={theme}>`
 - Add to `index.html` the following snippet: `<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet"><link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">`
 - Replace in `src/containers/Root.js` the `<button>` with `<Button variant="raised" color="primary">` and load at the top `import Button from '@material-ui/core/Button';`
 
+- Run `$ npm install --save-dev babel-plugin-transform-decorators-legacy` and add to `.babelrc` plugins `"transform-decorators-legacy"`
+- Add to Root.js:
+```javascript
+import { withStyles } from '@material-ui/core/styles';
+const styles = theme => ({
+  root: {
+    background: 'white',
+    maxWidth: '360px',
+    margin: '100px auto 16px',
+    padding: '32px 24px',
+    borderRadius: '3px'
+  }
+});
+@withStyles(styles)
+class Root extends Component {
+    render() {
+      const { loggedIn, classes } = this.props;
+      return (<div className={classes.root}> // rest of code ...
+```
 
-- `npm install babel-plugin-transform-decorators-legacy --save-dev` and add to `.babelrc` plugins `"transform-decorators-legacy"`
-- `@withStyles(styles)`
+### Add Icons / Social Login
+- On `https://developers.google.com/identity/sign-in/web/build-button` find the stylesheet to the logo(e.g. `/identity/sign-in/g-normal.png`). Enter this URL to download the file and store it to `src/assets`.
+- Run `npm install --save-dev file-loader` and add to `webpack.config.js` the line `{ test: /\.(png|svg|jpg|gif)$/, use: ['file-loader'] }`
+- Add to `src/containers/landing.js` the code `import GoogleIcon from '../assets/g-normal.png';` and `<img src={GoogleIcon} className={classes.leftIcon} />`
 
+### Change the Theme Palette
+```javascript
+import green from '@material-ui/core/colors/green';
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      ...green, // use the pre-defined color, but explicitly set contrastText because the one in pre-defined green is 'black'
+      contrastText: '#fff'
+    }
+  }
+});
+```
 
-### Add Icons
+## Multilingual support (React-Localize)
+- https://ryandrewjohnson.github.io/react-localize-redux-docs/
+- Run `$ npm install react-localize-redux --save`
+- 
+
+#### Older remarks
 - Run `$ npm install mdi-material-ui --save`
 - Add `import Google from 'mdi-material-ui/Google';` and `<Google />` inside the button.
-
 - `npm install --save @material-ui/icons`
+- `npm install svg-react-loader --save-dev`
+- `{ test: /\.svg$/, loader: 'babel!svg-react'}`
 
 ## WebApp (manifest.json, icons, serviceworker)
+
+### Offline Support (serviceworker-cache for app-shell, and redux-offline for state persistence)
+- Run `$ npm install --save @redux-offline/redux-offline`.
+- Add to `src/index.js` the lines `import { offline } from '@redux-offline/redux-offline'; import offlineConfig from '@redux-offline/redux-offline/lib/defaults'; compose( applyMiddleware(ReduxThunk), offline(offlineConfig) )`
+
 
 
 # Common Problems
 - `npm install --save-dev babel-preset-stage-2` and add to `.babelrc` (stage-2 for class propTypes)
 - `npm install --save-dev babel-preset-stage-3` and add to `.babelrc` (stage-3 for spread operator)
+
