@@ -17,7 +17,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import ReduxThunk from 'redux-thunk';
 // - multilingual
-import { localizeReducer as locale } from "react-localize-redux";
+import { localizeReducer as locale } from 'react-localize-redux';
 // - offline
 import { offline } from '@redux-offline/redux-offline';
 import offlineConfig from '@redux-offline/redux-offline/lib/defaults';

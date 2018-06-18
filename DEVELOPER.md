@@ -1,12 +1,13 @@
-# Setup Web Project
+Setup Web Project
+----
 
-## Prerequisites
+# Prerequisites
 - Have a Google account
 - Have a Github account and a repository created (default branch set to develop)
 - Login to Cloud9 with your Github account and start a workspace attached to the repository
 - Create a project in console.firebase.google.com (and enable Firestore in the Database section)
 
-## Project Bundling (Webpack)
+# Project Bundling (Webpack)
 - `npm init --yes`
 - `npm install --save-dev webpack webpack-dev-server webpack-cli`
 - add to package.json: `"start": "webpack-dev-server --mode development"` and `"build": "webpack --mode production"`
@@ -27,7 +28,7 @@ module.exports = {
 ```
 - Add to `.gitignore` the line `public/main.js`.
 
-## Logging and Configuration for Development
+# Logging and Configuration for Development
 - `npm install --save-dev loglevel`
 - add to package.json `"config-app": "node ./src/config/config-app"`
 - create a file `src/config/config-app.js` with the code `require('fs').writeFileSync('./src/config/app.json', JSON.stringify({LogLevel: 'debug' }));`
@@ -42,7 +43,7 @@ log.setLevel(Config.logLevel);
 log.info('hello world');
 ```
 
-## App Shell (React)
+# App Shell (React)
 - `$ npm install --save-dev babel-core babel-loader babel-preset-env`
 - add to `webpack.config.js` the module.rules[]: `{ test: /\.js$/, exclude: /node_modules/, use: ['babel-loader']	}`
 - `npm install --save react react-dom babel-preset-react`
@@ -59,7 +60,7 @@ render(
 );
 ```
 
-## Router
+# Router
 - `npm install --save react-router-dom history`
 - add to `webpack.config.js` to the devServer settings: `historyApiFallback: true`
 - add to `src/containers/Root.js`::
@@ -109,7 +110,7 @@ render(
 );
 ```
 
-## Firebase Hosting
+# Firebase Hosting
 - Run `$ npm install -g firebase-tools`
 - Run `$ firebase login --no-localhost`
 - Run `$ firebase init` and select all options (firestore, functions, hosting, database, etc..) and accept all defaults (but dont install dependencies now)
@@ -118,7 +119,7 @@ render(
 - Add to package.json `"deploy-firebase": "npm run build && firebase deploy --only hosting"` and run `$ npm run deploy-firebase`
 
 
-## Firebase Authentication
+# Firebase Authentication
 - At https://console.firebase.google.com the project, enable Google signin on Authentication section; and add the hosting URL to 'gemachtigde domeinen'
 - Run `$ npm install --save firebase`
 - Add to package.json `"config-firebase": "firebase setup:web --json > ./src/config/firebase.json"` and do `npm run config-firebase`
@@ -152,7 +153,7 @@ export async function loginUser() {
 - Change in `src/containters/Root.js` the `<h1>login</h1>` into `<button onClick={this.handleLogin}>Login</button>` and add `import { loginUser } from '../lib/firebase';` and `handleLogin() { loginUser(); }`
 - Run `$ npm install --save-dev babel-plugin-transform-runtime` and add to `.babelrc` the line `"plugins": ["transform-runtime"]` (it is for e.g. async/await functions)
 
-### Login/Logout Flow (with a sessions alwasy go back to the root; when no session, redirect to /landing)
+## Login/Logout Flow (with a sessions alwasy go back to the root; when no session, redirect to /landing)
 => when user goes to / (so wants to load the app), but has no sessions -> go to /landing
 => when on landing, login or register and already has sessions; go to / (the app)
 => when on landing, but has no sessions; be able to do social login, login, or register
@@ -160,7 +161,7 @@ export async function loginUser() {
 => when user is logged in; and is in the app, and clicks on logout; go to /
 
 
-## State Management (Redux)
+# State Management (Redux)
 - Run `npm install --save redux react-redux redux-thunk`
 - Add to `src/index.js` and wrap the router with `<Provider store={store}>`:
 ```javascript
@@ -187,7 +188,7 @@ export default withRouter(connect(mapStateToProps)(Root));
 ```
 - Check the result and see the automatic redirect to /login because state.auth.loggedIn is false.
 
-### Actions
+## Actions
 - Create the file `src/actions/authActions.js`:
 ```javascript
 import * as Firebase from '../lib/firebase';
@@ -233,7 +234,7 @@ export default (state = initialState, action) => {
 - Add the line `const mapDispatchToProps = dispatch => (bindActionCreators({ loginUser: loginUser }, dispatch));` and add this constant as second parameter to the `connect` function.
 - Modify the button line to `onClick={this.props.loginUser}`
 
-## Theme (Material-ui)
+# Theme (Material-ui)
 - Run `$ npm install --save @material-ui/core`
 - Run `$ npm install --save-dev style-loader css-loader`
 - Add to `webpack.config.js` the module.rule: `{ test: /\.css$/, exclude: /node_modules/, use: ['style-loader', 'css-loader'] }`
@@ -262,12 +263,12 @@ class Root extends Component {
       return (<div className={classes.root}> // rest of code ...
 ```
 
-### Add Icons / Social Login
+## Add Icons / Social Login
 - On `https://developers.google.com/identity/sign-in/web/build-button` find the stylesheet to the logo(e.g. `/identity/sign-in/g-normal.png`). Enter this URL to download the file and store it to `src/assets`.
 - Run `npm install --save-dev file-loader` and add to `webpack.config.js` the line `{ test: /\.(png|svg|jpg|gif)$/, use: ['file-loader'] }`
 - Add to `src/containers/landing.js` the code `import GoogleIcon from '../assets/g-normal.png';` and `<img src={GoogleIcon} className={classes.leftIcon} />`
 
-### Change the Theme Palette
+## Change the Theme Palette
 ```javascript
 import green from '@material-ui/core/colors/green';
 const theme = createMuiTheme({
@@ -280,25 +281,28 @@ const theme = createMuiTheme({
 });
 ```
 
-## Multilingual support (React-Localize)
-- https://ryandrewjohnson.github.io/react-localize-redux-docs/
-- Run `$ npm install react-localize-redux --save`
-- 
-
-#### Older remarks
+### Older remarks
 - Run `$ npm install mdi-material-ui --save`
 - Add `import Google from 'mdi-material-ui/Google';` and `<Google />` inside the button.
 - `npm install --save @material-ui/icons`
 - `npm install svg-react-loader --save-dev`
 - `{ test: /\.svg$/, loader: 'babel!svg-react'}`
 
-## WebApp (manifest.json, icons, serviceworker)
+# Multilingual support (React-Localize)
+- https://ryandrewjohnson.github.io/react-localize-redux-docs/
+- Run `$ npm install react-localize-redux --save`
+- In `src/index.js` add `import { localizeReducer as locale } from 'react-localize-redux'; and ... combineReducers({ locale });`
+- In `src/containers/Root.js` add `import { initialize, withLocalize } from 'react-localize-redux';` and `bindActionCreators({ initialize })`
+- In `src/containers/App.js` add `const mapStateToProps = state => ({ translate: getTranslate(state.locale) });` and `<h1>{this.props.translate('title')}</h1>`
 
-### Offline Support (serviceworker-cache for app-shell, and redux-offline for state persistence)
+# WebApp (manifest.json, icons, serviceworker)
+
+## Offline Support (serviceworker-cache for app-shell, and redux-offline for state persistence)
 - Run `$ npm install --save @redux-offline/redux-offline`.
 - Add to `src/index.js` the lines `import { offline } from '@redux-offline/redux-offline'; import offlineConfig from '@redux-offline/redux-offline/lib/defaults'; compose( applyMiddleware(ReduxThunk), offline(offlineConfig) )`
 
-
+# IoT Device Onboarding
+- 
 
 # Common Problems
 - `npm install --save-dev babel-preset-stage-2` and add to `.babelrc` (stage-2 for class propTypes)
