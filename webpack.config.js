@@ -9,6 +9,10 @@ module.exports = {
             { test: /\.(png|svg|jpg|gif)$/, use: ['file-loader'] }
         ]
     },
+    node: {
+        fs: 'empty',
+        tls: 'empty'
+    },
 	devServer: {
 		host: process.env.IP,
 		public: process.env.C9_HOSTNAME,

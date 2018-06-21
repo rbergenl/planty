@@ -1,3 +1,5 @@
+require('./lib/aws-test');
+
 // Logging
 import * as log from 'loglevel';
 import Config from './config';

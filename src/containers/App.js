@@ -7,6 +7,7 @@ import { getTranslate } from 'react-localize-redux';
 import { logoutUser } from '../actions/authActions';
 
 import AppBar from '../components/AppBar';
+import AddDeviceDialog from '../components/AddDeviceDialog';
 
 class App extends React.Component {
     render() {
@@ -15,6 +16,7 @@ class App extends React.Component {
             <div>
                 <AppBar loggedIn={loggedIn} logoutUser={logoutUser} title={translate('app_name')} />
                 <h1>{ translate('greeting', {name: givenName}) }</h1>
+                <AddDeviceDialog />
             </div>
         );
     }

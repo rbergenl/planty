@@ -302,9 +302,12 @@ const theme = createMuiTheme({
 - Add to `src/index.js` the lines `import { offline } from '@redux-offline/redux-offline'; import offlineConfig from '@redux-offline/redux-offline/lib/defaults'; compose( applyMiddleware(ReduxThunk), offline(offlineConfig) )`
 
 # IoT Device Onboarding
-- 
+- Create CognitoIdentityPool on AWS. (set the Google Provider). Also set IAM Role `Unauth` with Policy `AWSIoTFullAccess`
+- Run `$ npm install --save aws-iot-device-sdk aws-sdk`
+- Add to `webpack.config.js` the line `node: { fs: 'empty', tls: 'empty' }`
+- Do `export AWS_SERVICES=cognitoidentity,dynamodb,s3,sqs` (to reduce webpack bundle size)
 
-# Common Problems
+# Troubleshooting
 - `npm install --save-dev babel-preset-stage-2` and add to `.babelrc` (stage-2 for class propTypes)
 - `npm install --save-dev babel-preset-stage-3` and add to `.babelrc` (stage-3 for spread operator)
 
