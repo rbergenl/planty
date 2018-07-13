@@ -1,10 +1,12 @@
 var AWS = require('aws-sdk');
 var AWSIoTData = require('aws-iot-device-sdk');
 
+import * as Config from '../config';
+
 var AWSConfiguration = {
-   poolId: 'us-east-1:c62c94d5-16a8-4aec-b83a-d18eec2568ef', // 'YourCognitoIdentityPoolId'
-   host: 'a36bz20xtb4kpv.iot.us-east-1.amazonaws.com', // 'YourAwsIoTEndpoint', e.g. 'prefix.iot.us-east-1.amazonaws.com'
-   region: 'us-east-1' // 'YourAwsRegion', e.g. 'us-east-1'
+   poolId: Config.awsCognitoIdentityPoolId, // 'YourCognitoIdentityPoolId'
+   host: Config.awsIotHost, // 'YourAwsIoTEndpoint', e.g. 'prefix.iot.us-east-1.amazonaws.com'
+   region: Config.awsRegion // 'YourAwsRegion', e.g. 'us-east-1'
 };
 
 console.log('Loaded AWS SDK for JavaScript and AWS IoT SDK for Node.js');
