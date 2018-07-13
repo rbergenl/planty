@@ -1,4 +1,4 @@
-require('./lib/aws-test');
+//require('./lib/aws-test');
 
 // Logging
 import * as log from 'loglevel';

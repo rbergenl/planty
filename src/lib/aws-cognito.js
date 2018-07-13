@@ -49,6 +49,8 @@ const getUserToken = currentUser => (
  */
 export const getAwsCredentials = (token, provider) => (
   new Promise((resolve, reject) => {
+    
+    console.log('now im also here')
     let providerKey = '';
 
     switch (provider) {

@@ -301,8 +301,27 @@ const theme = createMuiTheme({
 - Run `$ npm install --save @redux-offline/redux-offline`.
 - Add to `src/index.js` the lines `import { offline } from '@redux-offline/redux-offline'; import offlineConfig from '@redux-offline/redux-offline/lib/defaults'; compose( applyMiddleware(ReduxThunk), offline(offlineConfig) )`
 
-# IoT Device Onboarding
-- Create CognitoIdentityPool on AWS. (set the Google Provider). Also set IAM Role `Unauth` with Policy `AWSIoTFullAccess`
+# IoT Device and User Onboarding
+- Create IAM Prodiver 'openid connect'. Get Client ID from console.cloud.google.com, select your project, go to 'API and Service' > inloggegevens. Use provider url: `https://accounts.google.com`
+- Create IAM Role 'identity_pool_auth' with Trust Relationship AssumeRole 'string equals' value of the 'identity pool arn'. Also attach the 'managed policy' of 'AWSIoTDataAccess'. Also add an inline policy with name `invoke-api-gateway`:
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": {
+        "Effect": "Allow",
+        "Action": "execute-api:Invoke",
+        "Resource": "arn:aws:execute-api:us-east-1:205612092240::/*"
+    }
+}
+```
+- Create Cognito UserPool on AWS.
+- Create Cognito IdentityPool with name 'identity_pool'. Attach the auth role to it.
+- Create IoT Policies
+- Create Lambda Function
+- Add all config to `config/index.js`
+- Add `aws-cognito` and Run `$ npm install --save amazon-cognito-identity-js`
+- Add `sigV4Client.js` and Run `$ npm install --save crypto-js`.
+
 - Run `$ npm install --save aws-iot-device-sdk aws-sdk`
 - Add to `webpack.config.js` the line `node: { fs: 'empty', tls: 'empty' }`
 - Do `export AWS_SERVICES=cognitoidentity,dynamodb,s3,sqs` (to reduce webpack bundle size)
@@ -311,3 +330,28 @@ const theme = createMuiTheme({
 - `npm install --save-dev babel-preset-stage-2` and add to `.babelrc` (stage-2 for class propTypes)
 - `npm install --save-dev babel-preset-stage-3` and add to `.babelrc` (stage-3 for spread operator)
 
+
+https://stackoverflow.com/questions/40301345/connect-to-aws-iot-using-web-socket-with-cognito-authenticated-users
+https://docs.aws.amazon.com/iot/latest/developerguide/thing-policy-examples.html
+
+Add Lambda function 
+```javascript
+function attachPrincipalPolicy(device_id, cognito_user_id) {
+    const iotMgmt = new AWS.Iot();
+    return new Promise(function(resolve, reject) {
+        let params = {
+            policyName: device_id + '_policy',
+            principal: cognito_user_id
+        };
+        console.log("Attaching IoT policy to Cognito principal")
+        iotMgmt.attachPrincipalPolicy(params, (err, res) => {
+            if (err) {
+                console.error(err);
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+```

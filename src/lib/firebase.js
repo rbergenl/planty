@@ -15,7 +15,8 @@ export async function loginUser() {
             user: result.user,
             given_name: result.additionalUserInfo.profile.given_name,
             // This gives you a Google Access Token. You can use it to access the Google API.
-            token: result.credential.accessToken
+            token: result.credential.accessToken,
+            result: result
         });
         return userData;
     } catch(error) {

@@ -8,12 +8,18 @@
   specific language governing permissions and limitations under the License.
 */
 
+var AWS = require('aws-sdk');
+
+
+
+
 import DeviceSdk from 'aws-iot-device-sdk';
 import * as log from 'loglevel';
 
 import Config from '../config';
 
 let instance = null;
+
 
 /**
  * Singleton class to hold mqtt device client instance
@@ -65,7 +71,7 @@ export default class IoTClient {
       // so we don't want to leave the user waiting too long for reconnection after
       // re-connecting to the network/re-opening their laptop/etc...
       baseReconnectTimeMs: options.baseReconnectTimeMs || 250,
-      maximumReconnectTimeMs: options.maximumReconnectTimeMs || 500,
+      maximumReconnectTimeMs: options.maximumReconnectTimeMs || 8000,
 
       // Enable console debugging information
       debug: (typeof options.debug === 'undefined') ? true : options.debug,
