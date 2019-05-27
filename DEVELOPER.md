@@ -6,6 +6,15 @@ Setup Web Project
 - Have a Github account and a repository created (default branch set to develop)
 - Login to Cloud9 with your Github account and start a workspace attached to the repository
 - Create a project in console.firebase.google.com (and enable Firestore in the Database section)
+- Have an IDE installed (Atom)
+- Have NodeJS installed
+
+# Getting Started
+- `npm install`
+- `sudo npm install -g firebase-tools`
+- `firebase login`
+- `npm run config-app && npm run config-firebase`
+- `npm start`
 
 # Project Bundling (Webpack)
 - `npm init --yes`
@@ -33,7 +42,7 @@ module.exports = {
 - add to package.json `"config-app": "node ./src/config/config-app"`
 - create a file `src/config/config-app.js` with the code `require('fs').writeFileSync('./src/config/app.json', JSON.stringify({LogLevel: 'debug' }));`
 - create a file `src/config/index.js` with the code `import appConfig from './app.json'; export default { logLevel: appConfig.LogLevel };`
-- add to `.gitignore` the line `src/config/config-app.json` 
+- add to `.gitignore` the line `src/config/config-app.json`
 - add to `index.js` at the top:
 ```javascript
 // Logging
@@ -334,7 +343,7 @@ const theme = createMuiTheme({
 https://stackoverflow.com/questions/40301345/connect-to-aws-iot-using-web-socket-with-cognito-authenticated-users
 https://docs.aws.amazon.com/iot/latest/developerguide/thing-policy-examples.html
 
-Add Lambda function 
+Add Lambda function
 ```javascript
 function attachPrincipalPolicy(device_id, cognito_user_id) {
     const iotMgmt = new AWS.Iot();
